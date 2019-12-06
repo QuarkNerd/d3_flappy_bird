@@ -1,0 +1,178 @@
+<!DOCTYPE html>
+<meta charset="utf-8" />
+
+<style type="text/css">
+  .line {
+    fill: none;
+    stroke: #ffab00;
+    stroke-width: 3;
+  }
+
+  .overlay {
+    fill: none;
+    pointer-events: all;
+  }
+
+  .dot {
+    fill: #ffab00;
+    stroke: #fff;
+  }
+
+  .focus circle {
+    fill: none;
+    stroke: steelblue;
+  }
+</style>
+<body></body>
+<script src="../node_modules/d3/dist/d3.min.js"></script>
+<script>
+  const margin = { top: 50, right: 50, bottom: 50, left: 50 };
+  const width = 1000 - margin.left - margin.right;
+  const height = 600 - margin.top - margin.bottom;
+  const data = [
+    [0, 0, "Hear about it", 0, -10],
+    [2, 0, "See examples", 40, -10],
+    [3, 2, "See 'Hover Voronoi' example", 10, 0],
+    [3.5, 8, "See '.select(..)' on empty svgs", -12, -15],
+    [5, 7.5, "'Learn' data-joins", -10, 25],
+    [6.5, 8, "Actually start using d3", -20, -10],
+    [6.5, 1, "Unnecessary stubbornness kicks in", -20, 20],
+    [8, 5, "I made a thing without help", -30, -12]
+  ];
+  const dataPoints = data.length;
+  const maxX = Math.max(...data.map(point => point[0]));
+  const maxY = Math.max(...data.map(point => point[1]));
+  const titleHeight = 100;
+
+  const xScale = d3
+    .scaleLinear()
+    .domain([0, maxX + 1])
+    .range([0, width]);
+
+  const yScale = d3
+    .scaleLinear()
+    .domain([0, maxY])
+    .range([height, 0]);
+
+  const line = d3
+    .line()
+    .x(function(d) {
+      return xScale(d[0]);
+    })
+    .y(function(d) {
+      return yScale(d[1]);
+    })
+    .curve(d3.curveMonotoneX);
+
+  const svg = d3
+    .select("body")
+    .append("svg")
+    .attr("width", width + margin.left + margin.right)
+    .attr("height", height + margin.top + margin.bottom + titleHeight)
+    .append("g")
+    .attr("transform", "translate(" + margin.left + "," + margin.top + ")");
+
+  svg
+    .append("text")
+    .attr("y", height + margin.top)
+    .attr("x", 100)
+    .text("My intentions on using d3 when I don't need to")
+    .attr("font-size", "30px");
+
+  svg
+    .append("text")
+    .attr("text-anchor", "end")
+    .attr("class", "axisHeader")
+    .attr("x", width)
+    .attr("y", height + margin.top - 15)
+    .text("Time")
+    .attr("font-size", "20px");
+  svg
+    .append("text")
+    .attr("text-anchor", "end")
+    .attr("class", "axisHeader")
+    .attr("transform", "rotate(-90)")
+    .attr("y", -margin.left + 15)
+    .attr("x", -margin.top)
+    .text("Intention")
+    .attr("font-size", "20px");
+
+  svg
+    .append("g")
+    .attr("class", "x axis")
+    .attr("transform", "translate(0," + height + ")")
+    .call(d3.axisBottom(xScale).ticks(0));
+
+  svg
+    .append("g")
+    .attr("class", "y axis")
+    .call(d3.axisLeft(yScale).ticks(0));
+
+  svg
+    .selectAll(".dot")
+    .data(data)
+    .enter()
+    .append("circle")
+    .attr("class", "dot")
+    .attr("cx", d => xScale(d[0]))
+    .attr("cy", d => yScale(d[1]))
+    .attr("r", 6);
+
+  svg
+    .append("path")
+    .datum(data)
+    .attr("class", "line")
+    .attr("d", line)
+    .attr("stroke-dasharray", "70 3000")
+    .attr("stroke-dashoffset", "35");
+
+  let distance;
+  let totalDistance = -35;
+  let thisPoint;
+  let nextPoint;
+  let lineDisplay = svg.select(".line");
+  data.push([10, 10, ""]);
+  addText(0);
+
+  for (let i = 0; i < data.length - 1; i++) {
+    thisPoint = data[i];
+    nextPoint = data[i + 1];
+
+    distance =
+      ((yScale(thisPoint[1]) - yScale(nextPoint[1])) ** 2 +
+        (xScale(thisPoint[0]) - xScale(nextPoint[0])) ** 2) **
+      0.5;
+    totalDistance += distance;
+    lineDisplay = lineDisplay
+      .transition()
+      .duration(distance * 2.5)
+      .delay(500)
+      .ease(d3.easeLinear)
+      .attr("stroke-dashoffset", `-${totalDistance}`)
+      .on("end", () => addText(i + 1));
+  }
+
+  lineDisplay = lineDisplay
+    .transition()
+    .delay(100)
+    .duration(0)
+    .style("opacity", "0")
+    .attr("stroke-dasharray", "0")
+    .attr("stroke-dashoffset", "0");
+
+  lineDisplay
+    .transition()
+    .delay(100)
+    .duration(1000)
+    .ease(d3.easeLinear)
+    .style("opacity", "1");
+
+  function addText(a) {
+    dataPoint = data[a];
+    svg
+      .append("text")
+      .attr("y", yScale(dataPoint[1]) + dataPoint[4])
+      .attr("x", xScale(dataPoint[0]) + dataPoint[3])
+      .text(dataPoint[2]);
+  }
+</script>
