@@ -3,28 +3,17 @@
 
 <style type="text/css">
   .line {
+    stroke: red;
     fill: none;
-    stroke: #ffab00;
     stroke-width: 3;
   }
 
-  .overlay {
-    fill: none;
-    pointer-events: all;
-  }
-
   .dot {
-    fill: #ffab00;
-    stroke: #fff;
-  }
-
-  .focus circle {
-    fill: none;
-    stroke: steelblue;
+    fill: black;
   }
 </style>
 <body></body>
-<script src="../node_modules/d3/dist/d3.min.js"></script>
+<script src="./node_modules/d3/dist/d3.min.js"></script>
 <script>
   const margin = { top: 50, right: 50, bottom: 50, left: 50 };
   const width = 1000 - margin.left - margin.right;
@@ -37,7 +26,7 @@
     [5, 7.5, "'Learn' data-joins", -10, 25],
     [6.5, 8, "Actually start using d3", -20, -10],
     [6.5, 1, "Unnecessary stubbornness kicks in", -20, 20],
-    [8, 5, "I made a thing without help", -30, -12]
+    [8, 5, "I made a thing without help", -30, -12],
   ];
   const dataPoints = data.length;
   const maxX = Math.max(...data.map(point => point[0]));
@@ -107,6 +96,13 @@
     .append("g")
     .attr("class", "y axis")
     .call(d3.axisLeft(yScale).ticks(0));
+  svg
+    .append("path")
+    .datum(data)
+    .attr("class", "line")
+    .attr("d", line)
+    .attr("stroke-dasharray", "70 3000")
+    .attr("stroke-dashoffset", "35");
 
   svg
     .selectAll(".dot")
@@ -117,14 +113,6 @@
     .attr("cx", d => xScale(d[0]))
     .attr("cy", d => yScale(d[1]))
     .attr("r", 6);
-
-  svg
-    .append("path")
-    .datum(data)
-    .attr("class", "line")
-    .attr("d", line)
-    .attr("stroke-dasharray", "70 3000")
-    .attr("stroke-dashoffset", "35");
 
   let distance;
   let totalDistance = -35;
