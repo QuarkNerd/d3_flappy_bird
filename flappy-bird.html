@@ -25,31 +25,28 @@
     .attr("class", "game")
     .append("g");
 
-  setInterval(createAndTransitionPipePair, 800);
-  createPlayer();
+  const player = createPlayer(); //refactor or rename
+  const pipeInterval = setInterval(createAndTransitionPipePair, 800);
+  const collisionInterval = setInterval(detectCollisionOfPlayer, 25);
+
   function createPlayer() {
     const player = svg
-      .append("rect")
+      .append("circle")
       .attr("class", "player")
-      .attr("x", 20)
-      .attr("y", 300)
-      .attr("width", 20)
-      .attr("height", 20);
+      .attr("cx", 20)
+      .attr("cy", 300)
+      .attr("r", 20);
     makePlayerFall(player);
 
     let isKeyDown = false;
     document.body.onkeydown = function(e) {
       if (e.keyCode == 32 && !isKeyDown) {
         isKeyDown = true;
-        const playerJumped = player
+        player
           .transition()
           .duration(100)
-          .attr("y", parseFloat(player.attr("y")) - 50)
-          .transition()
-          .duration(Math.sqrt(700 - player.attr("y")) * 50)
-          .attr("y", 700)
-          .ease(d3.easeQuadIn);
-        // makePlayerFall(playerJumped); Doesn't work????????
+          .attr("cy", parseFloat(player.attr("cy")) - 50);
+        makePlayerFall(player, 101);
       }
     };
 
@@ -58,10 +55,63 @@
         isKeyDown = false;
       }
     };
+    return player;
+  }
+
+  function detectCollisionOfPlayer() {
+    svg.selectAll("rect").each(function() {
+      if (doRectAndCircleCollide(this, player)) {
+        endGame();
+      }
+    });
+  }
+
+  function endGame() {
+    player.transition();
+    document.body.onkeydown = null;
+    clearInterval(pipeInterval);
+    clearInterval(collisionInterval);
+    svg.selectAll("rect").transition();
+  }
+
+  function doRectAndCircleCollide(rect, circle) {
+    const rectAttr = ["x", "y", "width", "height"].reduce((acc, property) => {
+      acc[property] = parseFloat(rect.getAttribute(property));
+      return acc;
+    }, {});
+    const circleAttr = ["cx", "cy", "r"].reduce((acc, property) => {
+      acc[property] = parseFloat(circle.attr(property));
+      return acc;
+    }, {});
+
+    const distBetweenCentresX = Math.abs(
+      circleAttr.cx - (rectAttr.x + rectAttr.width / 2)
+    );
+    const distBetweenCentresY = Math.abs(
+      circleAttr.cy - (rectAttr.y + rectAttr.height / 2)
+    );
+
+    // If distance between centres is too small or to large, collsion must happen or cant happen
+    if (
+      distBetweenCentresX > rectAttr.width / 2 + circleAttr.r ||
+      distBetweenCentresY > rectAttr.height / 2 + circleAttr.r
+    ) {
+      return false;
+    }
+    if (
+      distBetweenCentresX <= rectAttr.width / 2 ||
+      distBetweenCentresY <= rectAttr.height / 2
+    ) {
+      return true;
+    }
+    //pythagoras
+    const dx = distBetweenCentresX - rectAttr.width / 2;
+    const dy = distBetweenCentresY - rectAttr.height / 2;
+    return dx * dx + dy * dy <= circleAttr.r * circleAttr.r;
   }
 
   function createAndTransitionPipePair() {
-    const shift = d3.randomUniform(-150, 150)(); // TODO make it so that the tiles can vary more but stay close to most recent value
+    const shift = d3.randomUniform(-150, 150)(); // TODO make it so that the tiles can consty more but stay close to most recent value
     [-400 + shift, 400 + shift].forEach(y => {
       svg
         .append("rect")
@@ -76,11 +126,13 @@
         .remove();
     });
   }
-  function makePlayerFall(play) {
+
+  function makePlayerFall(play, delay = 0) {
     play
       .transition()
-      .duration(Math.sqrt(600 - play.attr("y")) * 50)
-      .attr("y", 600)
+      .delay(delay)
+      .duration(Math.sqrt(650 - play.attr("cy")) * 50)
+      .attr("cy", 650)
       .ease(d3.easeQuadIn);
   }
 </script>
