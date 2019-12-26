@@ -7,7 +7,15 @@
   }
 
   .game {
-    background-color: grey;
+    background-color: #70c5ce;
+  }
+
+  .pipe {
+    fill: #558022;
+  }
+
+  .cloud {
+    fill: white;
   }
 </style>
 <body></body>
@@ -27,6 +35,7 @@
 
   const player = createPlayer(); //refactor or rename
   const pipeInterval = setInterval(createAndTransitionPipePair, 800);
+  const cloudInterval = setInterval(createAndTransitionCloud, 800);
   const collisionInterval = setInterval(detectCollisionOfPlayer, 25);
 
   function createPlayer() {
@@ -38,10 +47,10 @@
       .attr("r", 20);
     makePlayerFall(player);
 
-    let isKeyDown = false;
-    document.body.onkeydown = function(e) {
-      if (e.keyCode == 32 && !isKeyDown) {
-        isKeyDown = true;
+    let isMouseDown = false;
+    document.body.onmousedown = function(e) {
+      if (!isMouseDown) {
+        isMouseDown = true;
         player
           .transition()
           .duration(100)
@@ -50,16 +59,14 @@
       }
     };
 
-    document.body.onkeyup = function(e) {
-      if (e.keyCode == 32) {
-        isKeyDown = false;
-      }
+    document.body.onmouseup = function(e) {
+      isMouseDown = false;
     };
     return player;
   }
 
   function detectCollisionOfPlayer() {
-    svg.selectAll("rect").each(function() {
+    svg.selectAll(".pipe").each(function() {
       if (doRectAndCircleCollide(this, player)) {
         endGame();
       }
@@ -69,11 +76,60 @@
   function endGame() {
     player.transition();
     document.body.onkeydown = null;
-    clearInterval(pipeInterval);
-    clearInterval(collisionInterval);
+    [cloudInterval, pipeInterval, collisionInterval].forEach(interval =>
+      clearInterval(interval)
+    );
     svg.selectAll("rect").transition();
   }
 
+  function raisePlayer() {
+    d3.select(".player").raise();
+  }
+
+  function createAndTransitionPipePair() {
+    const shift = d3.randomUniform(-150, 150)(); // TODO make it so that the tiles can consty more but stay close to most recent value
+    [-400 + shift, 400 + shift].forEach(y => {
+      svg
+        .append("rect")
+        .attr("class", "pipe")
+        .attr("x", width)
+        .attr("y", y)
+        .attr("width", 40)
+        .attr("height", 600)
+        .transition()
+        .duration(2000)
+        .ease(d3.easeLinear)
+        .attr("x", -30)
+        .remove();
+    });
+  }
+
+  function createAndTransitionCloud() {
+    const shift = d3.randomUniform(-15, 15)();
+    svg
+      .append("rect")
+      .attr("class", "cloud")
+      .attr("x", width)
+      .attr("y", 200 + shift)
+      .attr("width", 32)
+      .attr("height", 35)
+      .transition()
+      .duration(4000)
+      .ease(d3.easeLinear)
+      .attr("x", -30)
+      .remove();
+
+    raisePlayer();
+  }
+
+  function makePlayerFall(play, delay = 0) {
+    play
+      .transition()
+      .delay(delay)
+      .duration(Math.sqrt(650 - play.attr("cy")) * 50)
+      .attr("cy", 650)
+      .ease(d3.easeQuadIn);
+  }
   function doRectAndCircleCollide(rect, circle) {
     const rectAttr = ["x", "y", "width", "height"].reduce((acc, property) => {
       acc[property] = parseFloat(rect.getAttribute(property));
@@ -108,31 +164,5 @@
     const dx = distBetweenCentresX - rectAttr.width / 2;
     const dy = distBetweenCentresY - rectAttr.height / 2;
     return dx * dx + dy * dy <= circleAttr.r * circleAttr.r;
-  }
-
-  function createAndTransitionPipePair() {
-    const shift = d3.randomUniform(-150, 150)(); // TODO make it so that the tiles can consty more but stay close to most recent value
-    [-400 + shift, 400 + shift].forEach(y => {
-      svg
-        .append("rect")
-        .attr("x", width)
-        .attr("y", y)
-        .attr("width", 20)
-        .attr("height", 600)
-        .transition()
-        .duration(2000)
-        .ease(d3.easeLinear)
-        .attr("x", -30)
-        .remove();
-    });
-  }
-
-  function makePlayerFall(play, delay = 0) {
-    play
-      .transition()
-      .delay(delay)
-      .duration(Math.sqrt(650 - play.attr("cy")) * 50)
-      .attr("cy", 650)
-      .ease(d3.easeQuadIn);
   }
 </script>
