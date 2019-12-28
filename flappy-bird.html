@@ -3,7 +3,17 @@
 
 <style type="text/css">
   .player {
-    fill: red;
+    fill: #d4bf27;
+  }
+
+  .playerEye {
+    fill: white;
+    stroke: black;
+    stroke-width: 0.5;
+  }
+
+  .playerPupil {
+    fill: black;
   }
 
   .game {
@@ -40,21 +50,40 @@
 
   function createPlayer() {
     const player = svg
-      .append("circle")
+      .append("g")
       .attr("class", "player")
-      .attr("cx", 20)
-      .attr("cy", 300)
+      .attr(
+        "transform",
+        createTransformString({ translate: [20, 300], rotate: [0] })
+      );
+    player
+      .append("circle")
+      .attr("class", "playerBody")
       .attr("r", 20);
+    player
+      .append("circle")
+      .attr("class", "playerEye")
+      .attr("r", 9)
+      .attr("cx", 7)
+      .attr("cy", -7);
+    player
+      .append("circle")
+      .attr("class", "playerPupil")
+      .attr("r", 2)
+      .attr("cx", 7)
+      .attr("cy", -7);
     makePlayerFall(player);
 
     let isMouseDown = false;
     document.body.onmousedown = function(e) {
       if (!isMouseDown) {
         isMouseDown = true;
+        const transform = parseTransformString(player.attr("transform"));
+        transform.translate[1] -= 50;
         player
           .transition()
           .duration(100)
-          .attr("cy", parseFloat(player.attr("cy")) - 50);
+          .attr("transform", createTransformString(transform));
         makePlayerFall(player, 101);
       }
     };
@@ -67,7 +96,12 @@
 
   function detectCollisionOfPlayer() {
     svg.selectAll(".pipe").each(function() {
-      if (doRectAndCircleCollide(this, player)) {
+      if (
+        doRectAndCircleCollide(
+          getRectAttributes(this),
+          getPlayerAttributes(player)
+        )
+      ) {
         endGame();
       }
     });
@@ -75,7 +109,7 @@
 
   function endGame() {
     player.transition();
-    document.body.onkeydown = null;
+    document.body.onmousedown = null;
     [cloudInterval, pipeInterval, collisionInterval].forEach(interval =>
       clearInterval(interval)
     );
@@ -123,28 +157,22 @@
   }
 
   function makePlayerFall(play, delay = 0) {
+    const transform = parseTransformString(play.attr("transform"));
+    const oldY = transform.translate[1];
+    transform.translate[1] = 650;
     play
       .transition()
       .delay(delay)
-      .duration(Math.sqrt(650 - play.attr("cy")) * 50)
-      .attr("cy", 650)
+      .duration(Math.sqrt(650 - oldY) * 50)
+      .attr("transform", createTransformString(transform))
       .ease(d3.easeQuadIn);
   }
-  function doRectAndCircleCollide(rect, circle) {
-    const rectAttr = ["x", "y", "width", "height"].reduce((acc, property) => {
-      acc[property] = parseFloat(rect.getAttribute(property));
-      return acc;
-    }, {});
-    const circleAttr = ["cx", "cy", "r"].reduce((acc, property) => {
-      acc[property] = parseFloat(circle.attr(property));
-      return acc;
-    }, {});
-
+  function doRectAndCircleCollide(rectAttr, circleAttr) {
     const distBetweenCentresX = Math.abs(
-      circleAttr.cx - (rectAttr.x + rectAttr.width / 2)
+      circleAttr.x - (rectAttr.x + rectAttr.width / 2)
     );
     const distBetweenCentresY = Math.abs(
-      circleAttr.cy - (rectAttr.y + rectAttr.height / 2)
+      circleAttr.y - (rectAttr.y + rectAttr.height / 2)
     );
 
     // If distance between centres is too small or to large, collsion must happen or cant happen
@@ -164,5 +192,36 @@
     const dx = distBetweenCentresX - rectAttr.width / 2;
     const dy = distBetweenCentresY - rectAttr.height / 2;
     return dx * dx + dy * dy <= circleAttr.r * circleAttr.r;
+  }
+
+  function getRectAttributes(rect) {
+    return ["x", "y", "width", "height"].reduce((acc, property) => {
+      acc[property] = parseFloat(rect.getAttribute(property));
+      return acc;
+    }, {});
+  }
+  function getPlayerAttributes(player) {
+    const translateProperty = parseTransformString(player.attr("transform"))
+      .translate;
+    const [x, y] = translateProperty;
+    const r = parseFloat(player.select(".playerBody").attr("r"));
+    return { x, y, r };
+  }
+  function parseTransformString(string) {
+    const transforms = string.split("\n");
+    return transforms.reduce((acc, transform) => {
+      const [property, values] = transform.replace(")", "").split("(");
+      const valueArray = values.split(",").map(val => parseFloat(val));
+      acc[property] = valueArray;
+      return acc;
+    }, {});
+  }
+  function createTransformString(transformObject) {
+    const transforms = Object.entries(transformObject);
+    const transformStrings = transforms.map(
+      ([property, values]) => `${property}(${values.join(",")})`
+    );
+    console.log(transformStrings);
+    return transformStrings.join("\n");
   }
 </script>
