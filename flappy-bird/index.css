@@ -1,0 +1,25 @@
+.player {
+  fill: #d4bf27;
+}
+
+.playerEye {
+  fill: white;
+  stroke: black;
+  stroke-width: 0.5;
+}
+
+.playerPupil {
+  fill: black;
+}
+
+.game {
+  background-color: #70c5ce;
+}
+
+.pipe {
+  fill: #558022;
+}
+
+.cloud {
+  fill: white;
+}
