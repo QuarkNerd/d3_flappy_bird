@@ -26,7 +26,7 @@
 		stroke-width: 0.5;
 		}
 	</style>
-	<circle r="20" class="playerBody" />
+	<circle r="20" cx="0" cy="0" class="playerBody" />
 	<circle r="7.5" cx="7" cy="-7" class="playerEye" />
 	<circle r="1" cx="7" cy="-7" class="playerPupil" />
 	<rect x="-1" y="3" rx="4" width="18" height="10" class="playerLips" />

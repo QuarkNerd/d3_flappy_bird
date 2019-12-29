@@ -39,7 +39,7 @@ function getPlayerAttributes(player) {
   return { x: x + 20, y: y + 20, r };
 }
 function parseTransformString(string) {
-  const transforms = string.split("\n");
+  const transforms = string.split(") ");
   return transforms.reduce((acc, transform) => {
     const [property, values] = transform.replace(")", "").split("(");
     const valueArray = values.split(",").map(val => parseFloat(val));
@@ -52,5 +52,5 @@ function createTransformString(transformObject) {
   const transformStrings = transforms.map(
     ([property, values]) => `${property}(${values.join(",")})`
   );
-  return transformStrings.join("\n");
+  return transformStrings.join(" ");
 }

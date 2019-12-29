@@ -21,9 +21,10 @@ function createPlayer() {
   const player = svg
     .append("g")
     .attr("class", "player")
+    .attr("transform-origin", "20px 20px")
     .attr(
       "transform",
-      createTransformString({ translate: [playerX, 300], rotate: [0] })
+      createTransformString({ translate: [playerX, 300], rotate: [-20] })
     );
 
   d3.xml("bird.svg").then(data => {
@@ -38,7 +39,9 @@ function createPlayer() {
     if (!isMouseDown) {
       isMouseDown = true;
       const transform = parseTransformString(player.attr("transform"));
+      console.log(transform);
       transform.translate[1] -= 50;
+      transform.rotate[0] = -20;
       player
         .transition()
         .duration(100)
@@ -135,6 +138,7 @@ function makePlayerFall(play, delay = 0) {
   const transform = parseTransformString(play.attr("transform"));
   const oldY = transform.translate[1];
   transform.translate[1] = 650;
+  transform.rotate[0] = 90;
   play
     .transition()
     .delay(delay)
