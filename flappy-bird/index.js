@@ -1,18 +1,19 @@
-const width = 1000;
-const height = 600;
+const WIDTH = 1000;
+const HEIGHT = 600;
 
 const svg = d3
   .select("body")
   .append("svg")
-  .attr("width", width)
-  .attr("height", height)
+  .attr("width", WIDTH)
+  .attr("height", HEIGHT)
   .attr("class", "game")
   .append("g");
 
 const player = createPlayer(); //refactor or rename
 const pipeInterval = setInterval(createAndTransitionPipePair, 800);
 const cloudInterval = setInterval(createAndTransitionCloud, 800);
-const collisionInterval = setInterval(detectCollisionOfPlayer, 25);
+const collisionInterval = setInterval(detectCollisionOfPlayer, 5);
+let fallTimeout = null;
 
 function createPlayer() {
   const player = svg
@@ -31,7 +32,7 @@ function createPlayer() {
   makePlayerFall(player);
 
   let isMouseDown = false;
-  document.body.onmousedown = function(e) {
+  document.body.onmousedown = function() {
     if (!isMouseDown) {
       isMouseDown = true;
       const transform = parseTransformString(player.attr("transform"));
@@ -40,11 +41,11 @@ function createPlayer() {
         .transition()
         .duration(100)
         .attr("transform", createTransformString(transform));
-      makePlayerFall(player, 101);
+      makePlayerFall(player, 100);
     }
   };
 
-  document.body.onmouseup = function(e) {
+  document.body.onmouseup = function() {
     isMouseDown = false;
   };
   return player;
@@ -64,12 +65,12 @@ function detectCollisionOfPlayer() {
 }
 
 function endGame() {
-  player.transition();
+  player.interrupt();
   document.body.onmousedown = null;
   [cloudInterval, pipeInterval, collisionInterval].forEach(interval =>
     clearInterval(interval)
   );
-  svg.selectAll("rect").transition();
+  svg.selectAll("rect").interrupt();
 }
 
 function raisePlayer() {
@@ -82,7 +83,7 @@ function createAndTransitionPipePair() {
     svg
       .append("rect")
       .attr("class", "pipe")
-      .attr("x", width)
+      .attr("x", WIDTH)
       .attr("y", y)
       .attr("width", 40)
       .attr("height", 600)
@@ -99,7 +100,7 @@ function createAndTransitionCloud() {
   svg
     .append("rect")
     .attr("class", "cloud")
-    .attr("x", width)
+    .attr("x", WIDTH)
     .attr("y", 200 + shift)
     .attr("width", 32)
     .attr("height", 35)

@@ -36,7 +36,6 @@ function getPlayerAttributes(player) {
     .translate;
   const [x, y] = translateProperty;
   const r = parseFloat(player.select(".playerBody").attr("r"));
-  console.log(x, y, r);
   return { x: x + 20, y: y + 20, r };
 }
 function parseTransformString(string) {
