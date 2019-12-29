@@ -1,0 +1,35 @@
+<svg viewBox="-20 -20 40 40" height="40" width="40" xmlns="http://www.w3.org/2000/svg">
+	<style>
+		.playerBody {
+		fill: #d4bf27;
+		}
+		
+		.playerEye {
+		fill: white;
+		stroke: black;
+		stroke-width: 0.5;
+		}
+		
+		.playerPupil {
+		fill: black;
+		}
+		
+		.playerLips {
+		fill: #EA5040;
+		stroke: black;
+		stroke-width: 0.5;
+		}
+		
+		.playerWing {
+		fill: #DAD787;
+		stroke: black;
+		stroke-width: 0.5;
+		}
+	</style>
+	<circle r="20" class="playerBody" />
+	<circle r="7.5" cx="7" cy="-7" class="playerEye" />
+	<circle r="1" cx="7" cy="-7" class="playerPupil" />
+	<rect x="-1" y="3" rx="4" width="18" height="10" class="playerLips" />
+	<line x1="2" y1="8" x2="17" y2="8" class="playerLips" />
+	<path d="M-16 0 L-16 8 C-16 10 -12 10 -10 6 C-8 4 0 2 -2 0 Z" class="playerWing" />
+</svg>
