@@ -1,8 +1,11 @@
 const WIDTH = 1000;
 const HEIGHT = 600;
+const playerX = 20;
+let score = 0;
+let gameActive = true;
 
 const svg = d3
-  .select("body")
+  .select("#game")
   .append("svg")
   .attr("width", WIDTH)
   .attr("height", HEIGHT)
@@ -10,10 +13,9 @@ const svg = d3
   .append("g");
 
 const player = createPlayer(); //refactor or rename
-const pipeInterval = setInterval(createAndTransitionPipePair, 800);
+const pipeInterval = setInterval(createAndTransitionPipePair, 700);
 const cloudInterval = setInterval(createAndTransitionCloud, 800);
 const collisionInterval = setInterval(detectCollisionOfPlayer, 5);
-let fallTimeout = null;
 
 function createPlayer() {
   const player = svg
@@ -21,7 +23,7 @@ function createPlayer() {
     .attr("class", "player")
     .attr(
       "transform",
-      createTransformString({ translate: [20, 300], rotate: [0] })
+      createTransformString({ translate: [playerX, 300], rotate: [0] })
     );
 
   d3.xml("bird.svg").then(data => {
@@ -64,7 +66,15 @@ function detectCollisionOfPlayer() {
   });
 }
 
+function incScoreIfPlaying() {
+  if (gameActive) {
+    score += 1;
+    document.getElementById("score").innerHTML = score;
+  }
+}
+
 function endGame() {
+  gameActive = false;
   player.interrupt();
   document.body.onmousedown = null;
   [cloudInterval, pipeInterval, collisionInterval].forEach(interval =>
@@ -78,6 +88,13 @@ function raisePlayer() {
 }
 
 function createAndTransitionPipePair() {
+  const pipeWidth = 70;
+  const speed = 0.5;
+  const distanceToEdge = WIDTH + 70;
+  const distanceToPassPlayer = WIDTH - (playerX - pipeWidth);
+  const timeToEdge = distanceToEdge / speed;
+  const timeToPassPlayer = distanceToPassPlayer / speed;
+
   const shift = d3.randomUniform(-150, 150)(); // TODO make it so that the tiles can consty more but stay close to most recent value
   [-400 + shift, 400 + shift].forEach(y => {
     svg
@@ -85,14 +102,15 @@ function createAndTransitionPipePair() {
       .attr("class", "pipe")
       .attr("x", WIDTH)
       .attr("y", y)
-      .attr("width", 40)
+      .attr("width", pipeWidth)
       .attr("height", 600)
       .transition()
-      .duration(2000)
+      .duration(timeToEdge)
       .ease(d3.easeLinear)
-      .attr("x", -30)
+      .attr("x", -70)
       .remove();
   });
+  setTimeout(incScoreIfPlaying, timeToPassPlayer);
 }
 
 function createAndTransitionCloud() {
