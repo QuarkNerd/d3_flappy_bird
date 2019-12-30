@@ -83,7 +83,8 @@ function endGame() {
   [cloudInterval, pipeInterval, collisionInterval].forEach(interval =>
     clearInterval(interval)
   );
-  svg.selectAll("rect").interrupt();
+  svg.selectAll(".pipe").interrupt();
+  svg.selectAll(".cloud").interrupt();
 }
 
 function raisePlayer() {
@@ -119,16 +120,22 @@ function createAndTransitionPipePair() {
 function createAndTransitionCloud() {
   const shift = d3.randomUniform(-15, 15)();
   svg
-    .append("rect")
+    .append("path")
     .attr("class", "cloud")
-    .attr("x", WIDTH)
-    .attr("y", 200 + shift)
-    .attr("width", 32)
-    .attr("height", 35)
+    .attr(
+      "d",
+      "M18 48 L40 48 C48 48 48 40 40 40 L38 40 C38 28 24 28 24 36 L20 36 L16 36 C8 36 8 48 20 48 Z"
+    )
+    .attr(
+      "transform",
+      createTransformString({ translate: [WIDTH, 200 + shift] })
+    )
+    .attr("width", 100)
+    .attr("height", 100)
     .transition()
-    .duration(4000)
+    .duration(4500)
     .ease(d3.easeLinear)
-    .attr("x", -30)
+    .attr("transform", createTransformString({ translate: [-50, 200 + shift] }))
     .remove();
 
   raisePlayer();
