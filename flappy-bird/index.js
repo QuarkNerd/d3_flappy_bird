@@ -94,7 +94,7 @@ function raisePlayer() {
 function createAndTransitionPipePair() {
   const pipeWidth = 70;
   const speed = 0.5;
-  const distanceToEdge = WIDTH + 70;
+  const distanceToEdge = WIDTH + pipeWidth;
   const distanceToPassPlayer = WIDTH - (playerX - pipeWidth);
   const timeToEdge = distanceToEdge / speed;
   const timeToPassPlayer = distanceToPassPlayer / speed;
@@ -111,14 +111,20 @@ function createAndTransitionPipePair() {
       .transition()
       .duration(timeToEdge)
       .ease(d3.easeLinear)
-      .attr("x", -70)
+      .attr("x", -pipeWidth)
       .remove();
   });
   setTimeout(incScoreIfPlaying, timeToPassPlayer);
 }
 
 function createAndTransitionCloud() {
-  const shift = d3.randomUniform(-15, 15)();
+  const shift = d3.randomUniform(-25, 25)();
+  const enlarge = d3.randomUniform(0.5, 1.5)();
+  const speed = 0.25;
+  const minX = 80;
+  const distanceToEdge = WIDTH + minX;
+  const timeToEdge = distanceToEdge / speed;
+
   svg
     .append("path")
     .attr("class", "cloud")
@@ -128,14 +134,21 @@ function createAndTransitionCloud() {
     )
     .attr(
       "transform",
-      createTransformString({ translate: [WIDTH, 200 + shift] })
+      createTransformString({
+        translate: [WIDTH, 200 + shift],
+        scale: [enlarge]
+      })
     )
-    .attr("width", 100)
-    .attr("height", 100)
     .transition()
-    .duration(4500)
+    .duration(timeToEdge)
     .ease(d3.easeLinear)
-    .attr("transform", createTransformString({ translate: [-50, 200 + shift] }))
+    .attr(
+      "transform",
+      createTransformString({
+        translate: [-minX, 200 + shift],
+        scale: [enlarge]
+      })
+    )
     .remove();
 
   raisePlayer();
