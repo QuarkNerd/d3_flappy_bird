@@ -3,7 +3,8 @@
 }
 
 .pipe {
-  fill: #558022;
+  fill: url(#pipeGradient);
+  stroke: black;
 }
 
 .cloud {

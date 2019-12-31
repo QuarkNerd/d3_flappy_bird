@@ -16,6 +16,7 @@ const player = createPlayer(); //refactor or rename
 const pipeInterval = setInterval(createAndTransitionPipePair, 700);
 const cloudInterval = setInterval(createAndTransitionCloud, 800);
 const collisionInterval = setInterval(detectCollisionOfPlayer, 5);
+createPipeGradient();
 
 function createPlayer() {
   const player = svg
@@ -34,25 +35,17 @@ function createPlayer() {
   });
   makePlayerFall(player);
 
-  let isMouseDown = false;
   document.body.onmousedown = function() {
-    if (!isMouseDown) {
-      isMouseDown = true;
-      const transform = parseTransformString(player.attr("transform"));
-      console.log(transform);
-      transform.translate[1] -= 50;
-      transform.rotate[0] = -20;
-      player
-        .transition()
-        .duration(100)
-        .attr("transform", createTransformString(transform));
-      makePlayerFall(player, 100);
-    }
+    const transform = parseTransformString(player.attr("transform"));
+    transform.translate[1] -= 50;
+    transform.rotate[0] = -20;
+    player
+      .transition()
+      .duration(100)
+      .attr("transform", createTransformString(transform));
+    makePlayerFall(player, 100, transform.translate[1]);
   };
 
-  document.body.onmouseup = function() {
-    isMouseDown = false;
-  };
   return player;
 }
 
@@ -76,6 +69,35 @@ function incScoreIfPlaying() {
   }
 }
 
+function createPipeGradient() {
+  const defs = svg.append("defs");
+  pipeGradient = defs.append("linearGradient").attr("id", "pipeGradient");
+  pipeGradient
+    .append("stop")
+    .attr("stop-color", "#73be2e")
+    .attr("offset", "0%");
+  pipeGradient
+    .append("stop")
+    .attr("stop-color", "#b2ec67")
+    .attr("offset", "20%");
+  pipeGradient
+    .append("stop")
+    .attr("stop-color", "#73be2e")
+    .attr("offset", "40%");
+  pipeGradient
+    .append("stop")
+    .attr("stop-color", "#73be2e")
+    .attr("offset", "80%");
+  pipeGradient
+    .append("stop")
+    .attr("stop-color", "#558121")
+    .attr("offset", "92%");
+  pipeGradient
+    .append("stop")
+    .attr("stop-color", "#73be2e")
+    .attr("offset", "100%");
+}
+
 function endGame() {
   gameActive = false;
   player.interrupt();
@@ -93,27 +115,62 @@ function raisePlayer() {
 
 function createAndTransitionPipePair() {
   const pipeWidth = 70;
+  const pipeHeadWidth = 80;
+  const pipeHeadHeight = 30;
   const speed = 0.5;
   const distanceToEdge = WIDTH + pipeWidth;
   const distanceToPassPlayer = WIDTH - (playerX - pipeWidth);
   const timeToEdge = distanceToEdge / speed;
   const timeToPassPlayer = distanceToPassPlayer / speed;
+  const pipeXSep = (pipeHeadWidth - pipeWidth) / 2;
+  const pipeYGap = 200;
 
-  const shift = d3.randomUniform(-150, 150)(); // TODO make it so that the tiles can consty more but stay close to most recent value
-  [-400 + shift, 400 + shift].forEach(y => {
+  const pipeGenY = d3.randomUniform(80, HEIGHT - 201)(); // TODO make it so that the tiles can consty more but stay close to most recent value
+  // const pipePair = svg
+  //   .append("g")
+  //   .attr("transform", createTransformString({ translate: [WIDTH, pipeGenY] }));
+
+  const pipes = [
+    {
+      x: WIDTH + pipeXSep,
+      y: 0,
+      height: pipeGenY,
+      width: pipeWidth
+    },
+    {
+      x: WIDTH + pipeXSep,
+      y: pipeGenY + pipeYGap,
+      height: 600 - pipeYGap - pipeGenY,
+      width: pipeWidth
+    },
+    {
+      x: WIDTH,
+      y: pipeGenY + pipeYGap,
+      height: pipeHeadHeight,
+      width: pipeHeadWidth
+    },
+    {
+      x: WIDTH,
+      y: pipeGenY - pipeHeadHeight,
+      height: pipeHeadHeight,
+      width: pipeHeadWidth
+    }
+  ];
+  pipes.forEach(({ x, y, width, height }) => {
     svg
       .append("rect")
       .attr("class", "pipe")
-      .attr("x", WIDTH)
+      .attr("x", x)
       .attr("y", y)
-      .attr("width", pipeWidth)
-      .attr("height", 600)
+      .attr("width", width)
+      .attr("height", height)
       .transition()
       .duration(timeToEdge)
       .ease(d3.easeLinear)
-      .attr("x", -pipeWidth)
+      .attr("x", x - distanceToEdge)
       .remove();
   });
+
   setTimeout(incScoreIfPlaying, timeToPassPlayer);
 }
 
@@ -154,15 +211,17 @@ function createAndTransitionCloud() {
   raisePlayer();
 }
 
-function makePlayerFall(play, delay = 0) {
+function makePlayerFall(play, delay = 0, startPos = null) {
   const transform = parseTransformString(play.attr("transform"));
-  const oldY = transform.translate[1];
-  transform.translate[1] = 650;
+  const oldY = startPos == null ? transform.translate[1] : startPos;
+  const endY = HEIGHT + 50;
+  transform.translate[1] = endY;
   transform.rotate[0] = 90;
   play
     .transition()
     .delay(delay)
-    .duration(Math.sqrt(650 - oldY) * 50)
+    .duration(Math.sqrt(endY - oldY) * 50)
     .attr("transform", createTransformString(transform))
-    .ease(d3.easeQuadIn);
+    .ease(d3.easeQuadIn)
+    .on("end", endGame);
 }
