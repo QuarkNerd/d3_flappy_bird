@@ -14,8 +14,8 @@ const svg = d3
 
 const player = createPlayer(); //refactor or rename
 const pipeInterval = setInterval(createAndTransitionPipePair, 700);
-const cloudInterval = setInterval(createAndTransitionCloud, 800);
-const collisionInterval = setInterval(detectCollisionOfPlayer, 5);
+const cloudInterval = setInterval(createAndTransitionCloud, 650);
+const endInterval = setInterval(detectLoss, 5);
 createPipeGradient();
 
 function createPlayer() {
@@ -49,14 +49,11 @@ function createPlayer() {
   return player;
 }
 
-function detectCollisionOfPlayer() {
+function detectLoss() {
+  const playerAttr = getPlayerAttributes(player);
+  if (playerAttr.y < -playerAttr.r) endGame();
   svg.selectAll(".pipe").each(function() {
-    if (
-      doRectAndCircleCollide(
-        getRectAttributes(this),
-        getPlayerAttributes(player)
-      )
-    ) {
+    if (doRectAndCircleCollide(getRectAttributes(this), playerAttr)) {
       endGame();
     }
   });
@@ -102,15 +99,11 @@ function endGame() {
   gameActive = false;
   player.interrupt();
   document.body.onmousedown = null;
-  [cloudInterval, pipeInterval, collisionInterval].forEach(interval =>
+  [cloudInterval, pipeInterval, endInterval].forEach(interval =>
     clearInterval(interval)
   );
   svg.selectAll(".pipe").interrupt();
   svg.selectAll(".cloud").interrupt();
-}
-
-function raisePlayer() {
-  d3.select(".player").raise();
 }
 
 function createAndTransitionPipePair() {
@@ -176,7 +169,9 @@ function createAndTransitionPipePair() {
 
 function createAndTransitionCloud() {
   const shift = d3.randomUniform(-25, 25)();
-  const enlarge = d3.randomUniform(0.5, 1.5)();
+  const enlarge = d3.randomUniform(0.8, 2)();
+  const opacity = d3.randomUniform(0.2, 1)();
+  const delay = d3.randomUniform(-300, 300)();
   const speed = 0.25;
   const minX = 80;
   const distanceToEdge = WIDTH + minX;
@@ -189,6 +184,7 @@ function createAndTransitionCloud() {
       "d",
       "M18 48 L40 48 C48 48 48 40 40 40 L38 40 C38 28 24 28 24 36 L20 36 L16 36 C8 36 8 48 20 48 Z"
     )
+    .attr("opacity", opacity)
     .attr(
       "transform",
       createTransformString({
@@ -196,7 +192,9 @@ function createAndTransitionCloud() {
         scale: [enlarge]
       })
     )
+    .lower()
     .transition()
+    .delay(delay)
     .duration(timeToEdge)
     .ease(d3.easeLinear)
     .attr(
@@ -207,8 +205,6 @@ function createAndTransitionCloud() {
       })
     )
     .remove();
-
-  raisePlayer();
 }
 
 function makePlayerFall(play, delay = 0, startPos = null) {
