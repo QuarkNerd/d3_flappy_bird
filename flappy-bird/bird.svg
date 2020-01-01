@@ -2,6 +2,8 @@
 	<style>
 		.playerBody {
 		fill: #d4bf27;
+		stroke:black;
+		stroke-width: 0.4;
 		}
 		
 		.playerEye {

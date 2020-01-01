@@ -1,7 +1,6 @@
 const WIDTH = 1000;
 const HEIGHT = 600;
 const playerX = 20;
-let score = 0;
 let gameActive = true;
 
 const svg = d3
@@ -12,10 +11,17 @@ const svg = d3
   .attr("class", "game")
   .append("g");
 
+svg
+  .append("text")
+  .attr("class", "score")
+  .attr("x", WIDTH / 2)
+  .attr("y", 30)
+  .text(0);
+
 const player = createPlayer(); //refactor or rename
 const pipeInterval = setInterval(createAndTransitionPipePair, 700);
 const cloudInterval = setInterval(createAndTransitionCloud, 650);
-const endInterval = setInterval(detectLoss, 5);
+const endInterval = setInterval(detectLoss, 20);
 createPipeGradient();
 
 function createPlayer() {
@@ -51,7 +57,7 @@ function createPlayer() {
 
 function detectLoss() {
   const playerAttr = getPlayerAttributes(player);
-  if (playerAttr.y < -playerAttr.r) endGame();
+  if (playerAttr.y < -playerAttr.r && playerAttr.y > HEIGHT) endGame();
   svg.selectAll(".pipe").each(function() {
     if (doRectAndCircleCollide(getRectAttributes(this), playerAttr)) {
       endGame();
@@ -61,8 +67,10 @@ function detectLoss() {
 
 function incScoreIfPlaying() {
   if (gameActive) {
-    score += 1;
-    document.getElementById("score").innerHTML = score;
+    const scoreHolder = svg.select(".score");
+    const oldScore = parseInt(scoreHolder.text());
+    scoreHolder.text(oldScore + 1);
+    scoreHolder.raise();
   }
 }
 
@@ -119,21 +127,18 @@ function createAndTransitionPipePair() {
   const pipeYGap = 200;
 
   const pipeGenY = d3.randomUniform(80, HEIGHT - 201)(); // TODO make it so that the tiles can consty more but stay close to most recent value
-  // const pipePair = svg
-  //   .append("g")
-  //   .attr("transform", createTransformString({ translate: [WIDTH, pipeGenY] }));
 
-  const pipes = [
+  [
     {
       x: WIDTH + pipeXSep,
-      y: 0,
-      height: pipeGenY,
+      y: -5,
+      height: pipeGenY + 5,
       width: pipeWidth
     },
     {
       x: WIDTH + pipeXSep,
       y: pipeGenY + pipeYGap,
-      height: 600 - pipeYGap - pipeGenY,
+      height: 600 - pipeYGap - pipeGenY + 5,
       width: pipeWidth
     },
     {
@@ -148,8 +153,7 @@ function createAndTransitionPipePair() {
       height: pipeHeadHeight,
       width: pipeHeadWidth
     }
-  ];
-  pipes.forEach(({ x, y, width, height }) => {
+  ].forEach(({ x, y, width, height }) => {
     svg
       .append("rect")
       .attr("class", "pipe")
@@ -218,6 +222,5 @@ function makePlayerFall(play, delay = 0, startPos = null) {
     .delay(delay)
     .duration(Math.sqrt(endY - oldY) * 50)
     .attr("transform", createTransformString(transform))
-    .ease(d3.easeQuadIn)
-    .on("end", endGame);
+    .ease(d3.easeQuadIn);
 }
