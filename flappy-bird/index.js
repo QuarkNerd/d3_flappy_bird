@@ -43,75 +43,17 @@ function createPlayer() {
 
   document.body.onmousedown = function() {
     const transform = parseTransformString(player.attr("transform"));
-    transform.translate[1] -= 50;
+    const jumpTime = 100;
+    transform.translate[1] -= 100;
     transform.rotate[0] = -20;
     player
       .transition()
-      .duration(100)
+      .duration(jumpTime)
       .attr("transform", createTransformString(transform));
-    makePlayerFall(player, 100, transform.translate[1]);
+    makePlayerFall(player, jumpTime, transform.translate[1]);
   };
 
   return player;
-}
-
-function detectLoss() {
-  const playerAttr = getPlayerAttributes(player);
-  if (playerAttr.y < -playerAttr.r && playerAttr.y > HEIGHT) endGame();
-  svg.selectAll(".pipe").each(function() {
-    if (doRectAndCircleCollide(getRectAttributes(this), playerAttr)) {
-      endGame();
-    }
-  });
-}
-
-function incScoreIfPlaying() {
-  if (gameActive) {
-    const scoreHolder = svg.select(".score");
-    const oldScore = parseInt(scoreHolder.text());
-    scoreHolder.text(oldScore + 1);
-    scoreHolder.raise();
-  }
-}
-
-function createPipeGradient() {
-  const defs = svg.append("defs");
-  pipeGradient = defs.append("linearGradient").attr("id", "pipeGradient");
-  pipeGradient
-    .append("stop")
-    .attr("stop-color", "#73be2e")
-    .attr("offset", "0%");
-  pipeGradient
-    .append("stop")
-    .attr("stop-color", "#b2ec67")
-    .attr("offset", "20%");
-  pipeGradient
-    .append("stop")
-    .attr("stop-color", "#73be2e")
-    .attr("offset", "40%");
-  pipeGradient
-    .append("stop")
-    .attr("stop-color", "#73be2e")
-    .attr("offset", "80%");
-  pipeGradient
-    .append("stop")
-    .attr("stop-color", "#558121")
-    .attr("offset", "92%");
-  pipeGradient
-    .append("stop")
-    .attr("stop-color", "#73be2e")
-    .attr("offset", "100%");
-}
-
-function endGame() {
-  gameActive = false;
-  player.interrupt();
-  document.body.onmousedown = null;
-  [cloudInterval, pipeInterval, endInterval].forEach(interval =>
-    clearInterval(interval)
-  );
-  svg.selectAll(".pipe").interrupt();
-  svg.selectAll(".cloud").interrupt();
 }
 
 function createAndTransitionPipePair() {
@@ -171,6 +113,31 @@ function createAndTransitionPipePair() {
   setTimeout(incScoreIfPlaying, timeToPassPlayer);
 }
 
+function createPipeGradient() {
+  const defs = svg.append("defs");
+  pipeGradient = defs.append("linearGradient").attr("id", "pipeGradient");
+  pipeGradient
+    .append("stop")
+    .attr("stop-color", "#73be2e")
+    .attr("offset", "0%");
+  pipeGradient
+    .append("stop")
+    .attr("stop-color", "#b2ec67")
+    .attr("offset", "20%");
+  pipeGradient
+    .append("stop")
+    .attr("stop-color", "#73be2e")
+    .attr("offset", "40%");
+  pipeGradient
+    .append("stop")
+    .attr("stop-color", "#73be2e")
+    .attr("offset", "70%");
+  pipeGradient
+    .append("stop")
+    .attr("stop-color", "#558121")
+    .attr("offset", "100%");
+}
+
 function createAndTransitionCloud() {
   const shift = d3.randomUniform(-25, 25)();
   const enlarge = d3.randomUniform(0.8, 2)();
@@ -211,6 +178,15 @@ function createAndTransitionCloud() {
     .remove();
 }
 
+function incScoreIfPlaying() {
+  if (gameActive) {
+    const scoreHolder = svg.select(".score");
+    const oldScore = parseInt(scoreHolder.text());
+    scoreHolder.text(oldScore + 1);
+    scoreHolder.raise();
+  }
+}
+
 function makePlayerFall(play, delay = 0, startPos = null) {
   const transform = parseTransformString(play.attr("transform"));
   const oldY = startPos == null ? transform.translate[1] : startPos;
@@ -220,7 +196,28 @@ function makePlayerFall(play, delay = 0, startPos = null) {
   play
     .transition()
     .delay(delay)
-    .duration(Math.sqrt(endY - oldY) * 50)
+    .duration(Math.sqrt(endY - oldY) * 45)
     .attr("transform", createTransformString(transform))
     .ease(d3.easeQuadIn);
+}
+
+function detectLoss() {
+  const playerAttr = getPlayerAttributes(player);
+  if (playerAttr.y < -playerAttr.r || playerAttr.y > HEIGHT) endGame();
+  svg.selectAll(".pipe").each(function() {
+    if (doRectAndCircleCollide(getRectAttributes(this), playerAttr)) {
+      endGame();
+    }
+  });
+}
+
+function endGame() {
+  gameActive = false;
+  player.interrupt();
+  document.body.onmousedown = null;
+  [cloudInterval, pipeInterval, endInterval].forEach(interval =>
+    clearInterval(interval)
+  );
+  svg.selectAll(".pipe").interrupt();
+  svg.selectAll(".cloud").interrupt();
 }
