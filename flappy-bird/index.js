@@ -8,7 +8,7 @@ const svg = d3
   .attr("height", HEIGHT)
   .attr("class", "game")
   .append("g");
-let gameActive;
+let game = { active: false, ID: 0 };
 let player;
 let pipeInterval;
 let endInterval;
@@ -16,7 +16,8 @@ let cloudInterval;
 
 function startGame() {
   svg.selectAll("*").remove();
-  gameActive = true;
+  game.active = true;
+  game.ID++;
 
   player = createPlayer(); //refactor or rename
   pipeInterval = setInterval(createAndTransitionPipePair, 1200);
@@ -27,12 +28,15 @@ function startGame() {
   createPipeGradient();
 }
 
-function incScoreIfPlaying() {
-  if (gameActive) {
-    const scoreHolder = svg.select(".score");
-    const oldScore = parseInt(scoreHolder.text());
-    scoreHolder.text(oldScore + 1);
-    scoreHolder.raise();
+function incScoreIfPlaying(gameIDofIncrement, delay) {
+  setTimeout(increaseScore, delay);
+  function increaseScore() {
+    if (gameIDofIncrement === game.ID && game.active) {
+      const scoreHolder = svg.select(".score");
+      const oldScore = parseInt(scoreHolder.text());
+      scoreHolder.text(oldScore + 1);
+      scoreHolder.raise();
+    }
   }
 }
 
@@ -47,7 +51,7 @@ function detectLoss() {
 }
 
 function endGame() {
-  gameActive = false;
+  game.active = false;
   document.getElementById("startGame").removeAttribute("disabled");
   document.body.onmousedown = null;
   [pipeInterval, endInterval, cloudInterval].forEach(interval =>
@@ -144,7 +148,7 @@ function createAndTransitionPipePair() {
       .remove();
   });
 
-  setTimeout(incScoreIfPlaying, timeToPassPlayer);
+  incScoreIfPlaying(game.ID, timeToPassPlayer);
   makeScoreVisible();
 }
 
