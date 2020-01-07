@@ -157,6 +157,7 @@ function createAndTransitionCloud() {
   const enlarge = d3.randomUniform(0.8, 2)();
   const opacity = d3.randomUniform(0.2, 1)();
   const delay = d3.randomUniform(-300, 300)();
+  // const flip = d3.randomUniform(0,1)() < 0.5;
   const speed = 0.25;
   const minX = 80;
   const distanceToEdge = WIDTH + minX;
@@ -173,7 +174,7 @@ function createAndTransitionCloud() {
     .attr(
       "transform",
       createTransformString({
-        translate: [WIDTH, 200 + shift],
+        translate: [100 + WIDTH, 200 + shift],
         scale: [enlarge]
       })
     )
