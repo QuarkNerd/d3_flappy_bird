@@ -10,7 +10,8 @@ const svg = d3
   .append("g");
 let gameActive;
 let player;
-let pipeInterval;
+let pipeTimeout;
+let pipeTimeGap;
 let endInterval;
 let cloudInterval;
 
@@ -19,11 +20,12 @@ window.onfocus = () => {
 };
 
 function startGame() {
+  pipeTimeGap = 1200;
   svg.selectAll("*").remove();
   gameActive = true;
 
   player = createPlayer(); //refactor or rename
-  pipeInterval = setInterval(createAndTransitionPipePair, 1200);
+  pipeTimeout = setTimeout(createPipesAtDecreasingInterval, pipeTimeGap);
   endInterval = setInterval(detectLoss, 10);
   cloudInterval = setInterval(createAndTransitionCloud, 650);
   document.getElementById("startGame").setAttribute("disabled", true);
@@ -54,7 +56,7 @@ function endGame() {
   gameActive = false;
   document.getElementById("startGame").removeAttribute("disabled");
   document.body.onmousedown = null;
-  [pipeInterval, endInterval, cloudInterval].forEach(interval =>
+  [pipeTimeout, endInterval, cloudInterval].forEach(interval =>
     clearInterval(interval)
   );
   player.interrupt();
@@ -92,6 +94,12 @@ function createPlayer() {
   };
 
   return player;
+}
+
+function createPipesAtDecreasingInterval() {
+  createAndTransitionPipePair();
+  pipeTimeGap -= 15;
+  pipeTimeout = setTimeout(createPipesAtDecreasingInterval, pipeTimeGap);
 }
 
 function createAndTransitionPipePair() {
