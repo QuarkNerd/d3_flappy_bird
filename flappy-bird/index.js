@@ -14,6 +14,10 @@ let pipeInterval;
 let endInterval;
 let cloudInterval;
 
+window.onfocus = () => {
+  endGame();
+};
+
 function startGame() {
   svg.selectAll("*").remove();
   gameActive = true;
