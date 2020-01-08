@@ -1,9 +1,0 @@
-{
-  "name": "d3_charts",
-  "version": "1.0.0",
-  "description": "d3_charts",
-  "main": "index.js",
-  "author": "",
-  "license": "ISC",
-  "dependencies": {}
-}
