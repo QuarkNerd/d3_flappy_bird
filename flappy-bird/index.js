@@ -8,7 +8,7 @@ const svg = d3
   .attr("height", HEIGHT)
   .attr("class", "game")
   .append("g");
-let gameActive;
+let game = { active: false, ID: 0 };
 let player;
 let pipeTimeout;
 let pipeTimeGap;
@@ -22,7 +22,8 @@ window.onfocus = () => {
 function startGame() {
   pipeTimeGap = 1200;
   svg.selectAll("*").remove();
-  gameActive = true;
+  game.active = true;
+  game.ID++;
 
   player = createPlayer(); //refactor or rename
   pipeTimeout = setTimeout(createPipesAtDecreasingInterval, pipeTimeGap);
@@ -33,12 +34,15 @@ function startGame() {
   createPipeGradient();
 }
 
-function incScoreIfPlaying() {
-  if (gameActive) {
-    const scoreHolder = svg.select(".score");
-    const oldScore = parseInt(scoreHolder.text());
-    scoreHolder.text(oldScore + 1);
-    scoreHolder.raise();
+function incScoreIfPlaying(gameIDofIncrement, delay) {
+  setTimeout(increaseScore, delay);
+  function increaseScore() {
+    if (gameIDofIncrement === game.ID && game.active) {
+      const scoreHolder = svg.select(".score");
+      const oldScore = parseInt(scoreHolder.text());
+      scoreHolder.text(oldScore + 1);
+      scoreHolder.raise();
+    }
   }
 }
 
@@ -53,12 +57,11 @@ function detectLoss() {
 }
 
 function endGame() {
-  gameActive = false;
+  game.active = false;
   document.getElementById("startGame").removeAttribute("disabled");
   document.body.onmousedown = null;
-  [pipeTimeout, endInterval, cloudInterval].forEach(interval =>
-    clearInterval(interval)
-  );
+  [endInterval, cloudInterval].forEach(interval => clearInterval(interval));
+  clearTimeout(pipeTimeout);
   player.interrupt();
   svg.selectAll(".pipe").interrupt();
   svg.selectAll(".cloud").interrupt();
@@ -156,7 +159,7 @@ function createAndTransitionPipePair() {
       .remove();
   });
 
-  setTimeout(incScoreIfPlaying, timeToPassPlayer);
+  incScoreIfPlaying(game.ID, timeToPassPlayer);
   makeScoreVisible();
 }
 
@@ -165,7 +168,6 @@ function createAndTransitionCloud() {
   const enlarge = d3.randomUniform(0.8, 2)();
   const opacity = d3.randomUniform(0.2, 1)();
   const delay = d3.randomUniform(-300, 300)();
-  // const flip = d3.randomUniform(0,1)() < 0.5;
   const speed = 0.25;
   const minX = 80;
   const distanceToEdge = WIDTH + minX;
