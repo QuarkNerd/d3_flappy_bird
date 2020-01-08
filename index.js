@@ -77,7 +77,7 @@ function createPlayer() {
       createTransformString({ translate: [playerX, 300], rotate: [-20] })
     );
 
-  d3.xml("bird.svg").then(data => {
+  d3.xml("./Assets/bird.svg").then(data => {
     d3.select(".player")
       .node()
       .append(data.documentElement);
