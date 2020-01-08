@@ -1,2 +1,1 @@
-Random charts made in d3 for fun
-Credit to [this repositry](https://github.com/OliverForeman/d3-example) as my most helpful learning source
+Flappy Bird in d3, hosted [here](https://d3-exp-4577d.firebaseapp.com/)
