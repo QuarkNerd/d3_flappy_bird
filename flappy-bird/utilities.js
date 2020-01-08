@@ -35,7 +35,7 @@ function getPlayerAttributes(player) {
   const translateProperty = parseTransformString(player.attr("transform"))
     .translate;
   const [x, y] = translateProperty;
-  const r = parseFloat(player.select(".bird_Body").attr("r"));
+  const r = 20;
   return { x: x + 20, y: y + 20, r };
 }
 function parseTransformString(string) {
