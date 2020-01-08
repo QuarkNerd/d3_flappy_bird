@@ -15,7 +15,7 @@ let pipeTimeGap;
 let endInterval;
 let cloudInterval;
 
-window.onfocus = () => {
+window.onBlur = () => {
   endGame();
 };
 
