@@ -15,6 +15,8 @@ let pipeTimeGap;
 let endInterval;
 let cloudInterval;
 
+console.log(database);
+
 window.onblur = () => {
   endGame();
 };
