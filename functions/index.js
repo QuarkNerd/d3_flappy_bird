@@ -10,5 +10,5 @@ const functions = require("firebase-functions");
 exports.filterScores = functions.database
   .ref("/scores/{scoreID}")
   .onCreate((snapshot, context) => {
-    const ref = snapshot.ref;
+    // Do nothing (for now)
   });

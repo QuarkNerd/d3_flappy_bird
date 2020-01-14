@@ -17,4 +17,6 @@ function sendScore(name, score) {
   ID.set({ name, score });
 }
 
-function getScores() {}
+function getScores() {
+  scores.once("value").then(a => console.log(a.val()));
+}
