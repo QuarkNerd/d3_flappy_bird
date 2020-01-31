@@ -263,8 +263,6 @@ async function refreshScores() {
   const scoresArray = scores.map(data => [data.name, data.score]);
   scoreTable.selectAll("*").remove();
   const header = scoreTable.append("thead").append("tr");
-  console.log("a", header);
-  console.log(scores);
   header
     .selectAll("th")
     .data(["Name", "Score"])

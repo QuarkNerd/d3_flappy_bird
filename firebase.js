@@ -1,9 +1,7 @@
-var firebaseConfig = {
-  apiKey: "AIzaSyDSWt7dJ3B0YsmqZUrdsY2SS1uaPW9-jIM",
-  authDomain: "d3flappybird.firebaseapp.com",
-  databaseURL: "https://d3flappybird.firebaseio.com",
-  projectId: "d3flappybird",
-  storageBucket: "d3flappybird.appspot.com"
+const firebaseConfig = {
+  apiKey: "AIzaSyB5e1yI_YBs-reQrBG8HLYqy7lPgsQuNko",
+  authDomain: "d3-flappy-bird.firebaseapp.com",
+  databaseURL: "https://d3-flappy-bird.firebaseio.com"
 };
 
 firebase.initializeApp(firebaseConfig);
@@ -16,7 +14,6 @@ function sendScore() {
   const name = document.getElementById("name").value.toUpperCase();
   document.getElementById("sendScore").setAttribute("disabled", true);
   const score = parseInt(svg.select(".score").text());
-  console.log(name, score);
   const ID = scores.push();
   ID.set({ name, score });
 }

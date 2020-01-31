@@ -7,7 +7,7 @@
       ".write": "true",
       ".indexOn": "score",
       "$uid": {
-        ".validate": "newData.child('name').isString() && newData.child('name').val().length == 3 && newData.child('score').isNumber()"
+        ".validate": "newData.child('name').isString() && newData.child('name').val().length == 3 && newData.child('score').isNumber() && !data.exists()"
       }
     }
   }
