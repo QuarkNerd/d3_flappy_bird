@@ -8,14 +8,13 @@ const svg = d3
   .attr("height", HEIGHT)
   .attr("class", "game")
   .append("g");
+const scoreTable = d3.select("#scoreTable").append("table");
 let game = { active: false, ID: 0 };
 let player;
 let pipeTimeout;
 let pipeTimeGap;
 let endInterval;
 let cloudInterval;
-
-console.log(database);
 
 window.onblur = () => {
   endGame();
@@ -34,6 +33,8 @@ function startGame() {
   document.getElementById("startGame").setAttribute("disabled", true);
   createAndInitialiseScore();
   createPipeGradient();
+
+  document.getElementById("sendScore").removeAttribute("disabled");
 }
 
 function incScoreIfPlaying(gameIDofIncrement, delay) {
@@ -255,4 +256,32 @@ function makePlayerFall(play, delay = 0, startPos = null) {
     .duration(Math.sqrt(endY - oldY) * 40)
     .attr("transform", createTransformString(transform))
     .ease(d3.easeQuadIn);
+}
+
+async function refreshScores() {
+  const scores = await getScores();
+  const scoresArray = scores.map(data => [data.name, data.score]);
+  scoreTable.selectAll("*").remove();
+  const header = scoreTable.append("thead").append("tr");
+  console.log("a", header);
+  console.log(scores);
+  header
+    .selectAll("th")
+    .data(["Name", "Score"])
+    .enter()
+    .append("th")
+    .text(d => d);
+  const tablebody = scoreTable.append("tbody");
+  const rows = tablebody
+    .selectAll("tr")
+    .data(scoresArray)
+    .enter()
+    .append("tr");
+
+  rows
+    .selectAll("td")
+    .data(d => d)
+    .enter()
+    .append("td")
+    .text(d => d);
 }

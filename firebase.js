@@ -1,22 +1,30 @@
 var firebaseConfig = {
-  apiKey: "AIzaSyDMwQV8T27XcJ0G7DR43b9UcGX4apI2FiA",
-  authDomain: "d3-exp-4577d.firebaseapp.com",
-  databaseURL: "https://d3-exp-4577d.firebaseio.com",
-  storageBucket: "d3-exp-4577d.appspot.com"
+  apiKey: "AIzaSyDSWt7dJ3B0YsmqZUrdsY2SS1uaPW9-jIM",
+  authDomain: "d3flappybird.firebaseapp.com",
+  databaseURL: "https://d3flappybird.firebaseio.com",
+  projectId: "d3flappybird",
+  storageBucket: "d3flappybird.appspot.com"
 };
 
 firebase.initializeApp(firebaseConfig);
 
-// Get a reference to the database service
 const database = firebase.database();
 
-const scores = database.ref("scores/");
+const scores = database.ref("scores");
 
-function sendScore(name, score) {
+function sendScore() {
+  const name = document.getElementById("name").value.toUpperCase();
+  document.getElementById("sendScore").setAttribute("disabled", true);
+  const score = parseInt(svg.select(".score").text());
+  console.log(name, score);
   const ID = scores.push();
   ID.set({ name, score });
 }
 
-function getScores() {
-  scores.once("value").then(a => console.log(a.val()));
+async function getScores() {
+  const result = await scores
+    .orderByChild("score")
+    .limitToLast(10)
+    .once("value");
+  return Object.values(result.val()).sort((a, b) => -a.score + b.score);
 }
