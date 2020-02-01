@@ -1,3 +1,39 @@
+body {
+  background-color: #d3d3d3;
+  display: flex;
+  align-items: center;
+}
+
+button {
+  margin: 5px;
+  width: 80%;
+}
+
+input {
+  margin: 5px;
+  width: 80%;
+}
+
+.leaderBoardPanel {
+  padding-left: 20px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+}
+
+.startGame {
+  height: 50px;
+  width: 80px;
+}
+
+.shadow {
+  box-shadow: 0 4px 8px 0 rgba(0, 0, 0, 0.2), 0 6px 20px 0 rgba(0, 0, 0, 0.19);
+}
+
+.gapRight {
+  margin-right: 10px;
+}
+
 .game {
   background-color: #70c5ce;
 }
