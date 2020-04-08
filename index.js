@@ -118,10 +118,9 @@ function createAndTransitionPipePair() {
   const timeToEdge = distanceToEdge / speed;
   const timeToPassPlayer = distanceToPassPlayer / speed;
   const pipeXSep = (pipeHeadWidth - pipeWidth) / 2;
-  const pipeYGap = 200;
+  const pipeYGap = 140;
 
-  const pipeGenY = d3.randomUniform(80, HEIGHT - 201)(); // TODO make it so that the tiles can consty more but stay close to most recent value
-
+  const pipeGenY = d3.randomUniform(80, HEIGHT - 201)();
   [
     {
       x: WIDTH + pipeXSep,
