@@ -1,0 +1,57 @@
+<svg viewBox="0 0 150 150" height="150" width="150" xmlns="http://www.w3.org/2000/svg">
+	<style>
+		.bunny_face {
+			fill: #daac81;
+			stroke: black;
+			stroke-width:0.5;
+		}
+
+		.bunny_ears {
+			fill:  #daac81;
+		}
+
+		.bunny_inner_ears {
+			fill:  pink
+		}
+
+		.bunny_pupil {
+			fill: white;
+		}
+
+		.bunny_lips {
+			stroke: black;
+		}
+
+		.bunny_nose {
+			fill: pink;
+		}
+
+		.bunny_teeth {
+			stroke: black;
+			fill: #ffcf5a;
+		}
+
+		.bunny_whiskers {
+			stroke: black;
+		}
+
+	</style>
+	<rect x="8" y="0" width="12" height="40" class="bunny_ears" />
+	<rect x="38" y="0" width="12" height="40" class="bunny_ears" />
+	<rect x="11" y="3" width="6" height="40" class="bunny_inner_ears" />
+	<rect x="41" y="3" width="6" height="40" class="bunny_inner_ears" />
+	<circle r="30" cx="30" cy="60" class="bunny_face" />
+		<circle r="8" cx="15" cy="45" class="bunny_iris" />
+		<ellipse ry="4" rx="3" cx="17" cy="43" class="bunny_pupil" />
+		<circle r="8" cx="45" cy="45" class="bunny_iris" />
+		<ellipse ry="4" rx="3" cx="47" cy="43" class="bunny_pupil" />
+	<ellipse rx="10" ry="3" cx="30" cy="65" class="bunny_nose"/>
+	<line x1="10" y1="75" x2="50" y2="75" class="bunny_lips" />
+	<line x1="42" y1="65" x2="58" y2="65" class="bunny_whiskers" />
+	<line x1="42" y1="65" x2="58" y2="70" class="bunny_whiskers" />
+	<line x1="42" y1="65" x2="58" y2="60" class="bunny_whiskers" />
+	<line x1="18" y1="65" x2="2" y2="65" class="bunny_whiskers" />
+	<line x1="18" y1="65" x2="2" y2="70" class="bunny_whiskers" />
+	<line x1="18" y1="65" x2="2" y2="60" class="bunny_whiskers" />
+	<polygon points="15,75 15,85 27,85 30,76 33,85 45,85 45,75" class="bunny_teeth"/>
+</svg>
