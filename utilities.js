@@ -43,13 +43,31 @@ function getRectAttributes(rect) {
     return acc;
   }, {});
 }
-function getPlayerAttributes(player) {
-  const translateProperty = parseTransformString(player.attr("transform"))
-    .translate;
+
+function getBunnyFaceAttributes() {
+  const bunnyFace = svg.select(".bunny_face")._groups[0][0];
+  const attr = ["cx", "cy", "r"].reduce((acc, property) => {
+    acc[property] = parseFloat(bunnyFace.getAttribute(property));
+    return acc;
+  }, {});
+  const translateProperty = parseTransformString(player.attr("transform")).translate;
   const [x, y] = translateProperty;
-  const r = 20;
-  return { x: x + 20, y: y + 20, r };
+  return { ...attr, x: x + attr.cx, y: y + attr.cy };
 }
+
+function getBunnyEarAttributesArray() {
+  const bunnyEars = Array.from(svg.selectAll(".bunny_ears")._groups[0]);
+  const attrArray = bunnyEars.map(ear => (
+    ["x", "y", "width", "height"].reduce((acc, property) => {
+      acc[property] = parseFloat(ear.getAttribute(property));
+      return acc;
+    }, {})
+  ))
+  const translateProperty = parseTransformString(player.attr("transform")).translate;
+  const [x, y] = translateProperty;
+  return attrArray.map((attr) => ({ ...attr, x: x + attr.x, y: y + attr.y }));
+}
+
 function parseTransformString(string) {
   const transforms = string.split(") ");
   return transforms.reduce((acc, transform) => {
