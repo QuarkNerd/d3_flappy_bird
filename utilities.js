@@ -84,3 +84,9 @@ function createTransformString(transformObject) {
   );
   return transformStrings.join(" ");
 }
+
+function getRandomColourString() {
+  const genFrom0To255 = d3.randomUniform(256);
+  const intGen = () => Math.floor(genFrom0To255())
+  return `rgb(${intGen()},${intGen()},${intGen()})`;
+}
