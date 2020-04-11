@@ -1,4 +1,5 @@
 function doRectAndCircleCollide(rectAttr, circleAttr) {
+  if (!rectAttr || !circleAttr) return null;
   const distBetweenCentresX = Math.abs(
     circleAttr.x - (rectAttr.x + rectAttr.width / 2)
   );
@@ -46,6 +47,7 @@ function getRectAttributes(rect) {
 
 function getBunnyFaceAttributes() {
   const bunnyFace = svg.select(".bunny_face")._groups[0][0];
+  if (!bunnyFace) return null;
   const attr = ["cx", "cy", "r"].reduce((acc, property) => {
     acc[property] = parseFloat(bunnyFace.getAttribute(property));
     return acc;
