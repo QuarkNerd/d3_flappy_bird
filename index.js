@@ -72,6 +72,7 @@ function endGame() {
   player.interrupt();
   svg.selectAll(".pipe").interrupt();
   svg.selectAll(".cloud").interrupt();
+  svg.selectAll(".egg").interrupt();
 }
 
 function createPlayer() {
@@ -88,7 +89,7 @@ function createPlayer() {
       .node()
       .append(data.documentElement);
   });
-  makePlayerFall(player);
+  makeFall(player);
 
   document.body.onmousedown = function() {
     const transform = parseTransformString(player.attr("transform"));
@@ -98,7 +99,8 @@ function createPlayer() {
       .transition()
       .duration(jumpTime)
       .attr("transform", createTransformString(transform));
-    makePlayerFall(player, jumpTime, transform.translate[1]);
+    makeFall(player, jumpTime, transform.translate[1]);
+    createAndTransitionEgg();
   };
 
   return player;
@@ -207,6 +209,28 @@ function createAndTransitionCloud() {
     .remove();
 }
 
+function createAndTransitionEgg() {
+  const translateProperty = parseTransformString(player.attr("transform")).translate;
+  const [x, y] = translateProperty;
+  const egg = svg.append("g").classed("egg", true).lower();
+  egg.attr(
+    "transform",
+    createTransformString({
+      translate: [x, y+20],
+    })
+  )
+
+  const eggColor = getRandomColourString();
+  const spotColor = getRandomColourString();
+  egg.append("ellipse").attr("rx", "20").attr("cx", "20").attr("ry", "45").attr("cy", "25").attr("fill", eggColor);
+  egg.append("circle").attr("r", "7").attr("cx", "20").attr("cy", "60").attr("fill", spotColor);
+  egg.append("circle").attr("r", "6").attr("cx", "25").attr("cy", "32").attr("fill", spotColor);
+  egg.append("circle").attr("r", "6").attr("cx", "10").attr("cy", "40").attr("fill", spotColor);
+  egg.append("circle").attr("r", "6").attr("cx", "12").attr("cy", "15").attr("fill", spotColor);
+  egg.append("circle").attr("r", "8").attr("cx", "16").attr("cy", "-3").attr("fill", spotColor);
+  makeFall(egg);
+}
+
 function createAndInitialiseScore() {
   svg
     .append("text")
@@ -245,7 +269,7 @@ function makeScoreVisible() {
   svg.select(".score").raise();
 }
 
-function makePlayerFall(play, delay = 0, startPos = null) {
+function makeFall(play, delay = 0, startPos = null) {
   const transform = parseTransformString(play.attr("transform"));
   const oldY = startPos == null ? transform.translate[1] : startPos;
   const endY = HEIGHT + 50;
