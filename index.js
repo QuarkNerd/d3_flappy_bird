@@ -50,10 +50,14 @@ function incScoreIfPlaying(gameIDofIncrement, delay) {
 }
 
 function detectLoss() {
-  const playerAttr = getPlayerAttributes(player);
-  if (playerAttr.y < -playerAttr.r || playerAttr.y > HEIGHT) endGame();
+  const bunnyEarAttributesArray = getBunnyEarAttributesArray();
+  const bunnyFaceAttributes = getBunnyFaceAttributes();
   svg.selectAll(".pipe").each(function() {
-    if (doRectAndCircleCollide(getRectAttributes(this), playerAttr)) {
+    const pipeAttribute = getRectAttributes(this);
+    if (doRectAndCircleCollide(pipeAttribute, bunnyFaceAttributes) || 
+        doRectsCollide(bunnyEarAttributesArray[0], pipeAttribute) ||
+        doRectsCollide(bunnyEarAttributesArray[1], pipeAttribute)
+      ) {
       endGame();
     }
   });
@@ -74,10 +78,9 @@ function createPlayer() {
   const player = svg
     .append("g")
     .attr("class", "player")
-    .attr("transform-origin", "20px 20px")
     .attr(
       "transform",
-      createTransformString({ translate: [playerX, 300], rotate: [-20] })
+      createTransformString({ translate: [playerX, 300] })
     );
 
   d3.xml("./Assets/bunny.svg").then(data => {
@@ -91,7 +94,6 @@ function createPlayer() {
     const transform = parseTransformString(player.attr("transform"));
     const jumpTime = 100;
     transform.translate[1] -= 110;
-    transform.rotate[0] = -20;
     player
       .transition()
       .duration(jumpTime)
@@ -118,7 +120,7 @@ function createAndTransitionPipePair() {
   const timeToEdge = distanceToEdge / speed;
   const timeToPassPlayer = distanceToPassPlayer / speed;
   const pipeXSep = (pipeHeadWidth - pipeWidth) / 2;
-  const pipeYGap = 140;
+  const pipeYGap = 200;
 
   const pipeGenY = d3.randomUniform(80, HEIGHT - 201)();
   [
@@ -248,7 +250,6 @@ function makePlayerFall(play, delay = 0, startPos = null) {
   const oldY = startPos == null ? transform.translate[1] : startPos;
   const endY = HEIGHT + 50;
   transform.translate[1] = endY;
-  transform.rotate[0] = 90;
   play
     .transition()
     .delay(delay)
