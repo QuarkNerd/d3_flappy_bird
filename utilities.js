@@ -25,6 +25,18 @@ function doRectAndCircleCollide(rectAttr, circleAttr) {
   return dx * dx + dy * dy <= circleAttr.r * circleAttr.r;
 }
 
+function doRectsCollide(attrOne, attrTwo) {
+  const distBetweenCentresX = Math.abs(
+    (attrOne.x + attrOne.width / 2) - (attrTwo.x + attrTwo.width / 2)
+  );
+  const distBetweenCentresY = Math.abs(
+    (attrOne.y + attrOne.height / 2) - (attrTwo.y + attrTwo.height / 2)
+  );
+
+  return (distBetweenCentresX < (attrOne.width + attrTwo.width ) /2 &&
+    distBetweenCentresY < (attrOne.height / 2 + attrTwo.height) / 2)
+}
+
 function getRectAttributes(rect) {
   return ["x", "y", "width", "height"].reduce((acc, property) => {
     acc[property] = parseFloat(rect.getAttribute(property));
