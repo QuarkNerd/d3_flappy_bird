@@ -34,7 +34,7 @@ function startGame() {
   createAndInitialiseScore();
   createPipeGradient();
 
-  document.getElementById("sendScore").removeAttribute("disabled");
+  // document.getElementById("sendScore").removeAttribute("disabled");
 }
 
 function incScoreIfPlaying(gameIDofIncrement, delay) {
@@ -52,11 +52,14 @@ function incScoreIfPlaying(gameIDofIncrement, delay) {
 function detectLoss() {
   const bunnyEarAttributesArray = getBunnyEarAttributesArray();
   const bunnyFaceAttributes = getBunnyFaceAttributes();
+  const [_, y] = parseTransformString(player.attr("transform")).translate;
+
   svg.selectAll(".pipe").each(function() {
     const pipeAttribute = getRectAttributes(this);
     if (doRectAndCircleCollide(pipeAttribute, bunnyFaceAttributes) || 
         doRectsCollide(bunnyEarAttributesArray[0], pipeAttribute) ||
-        doRectsCollide(bunnyEarAttributesArray[1], pipeAttribute)
+        doRectsCollide(bunnyEarAttributesArray[1], pipeAttribute) || 
+        y > HEIGHT-20 || y < -80
       ) {
       endGame();
     }
@@ -128,8 +131,8 @@ function createAndTransitionPipePair() {
   [
     {
       x: WIDTH + pipeXSep,
-      y: -5,
-      height: pipeGenY + 5,
+      y: -30,
+      height: pipeGenY + 30,
       width: pipeWidth
     },
     {
