@@ -1,0 +1,72 @@
+[debug] [2020-04-08T14:06:49.741Z] ----------------------------------------------------------------------
+[debug] [2020-04-08T14:06:49.744Z] Command:       C:\Program Files\nodejs\node.exe C:\Users\Gurveer Arora\AppData\Roaming\npm\node_modules\firebase-tools\lib\bin\firebase.js deploy --only hosting
+[debug] [2020-04-08T14:06:49.744Z] CLI Version:   7.11.0
+[debug] [2020-04-08T14:06:49.744Z] Platform:      win32
+[debug] [2020-04-08T14:06:49.744Z] Node Version:  v12.13.1
+[debug] [2020-04-08T14:06:49.746Z] Time:          Wed Apr 08 2020 15:06:49 GMT+0100 (British Summer Time)
+[debug] [2020-04-08T14:06:49.746Z] ----------------------------------------------------------------------
+[debug] [2020-04-08T14:06:49.746Z] 
+[debug] [2020-04-08T14:06:49.756Z] > command requires scopes: ["email","openid","https://www.googleapis.com/auth/cloudplatformprojects.readonly","https://www.googleapis.com/auth/firebase","https://www.googleapis.com/auth/cloud-platform"]
+[debug] [2020-04-08T14:06:49.756Z] > authorizing via signed-in user
+[debug] [2020-04-08T14:06:49.757Z] [iam] checking project d3-flappy-bird for permissions ["firebase.projects.get","firebasehosting.sites.update"]
+[debug] [2020-04-08T14:06:49.758Z] >>> HTTP REQUEST POST https://cloudresourcemanager.googleapis.com/v1/projects/d3-flappy-bird:testIamPermissions  
+
+[debug] [2020-04-08T14:06:51.523Z] <<< HTTP RESPONSE 200
+[debug] [2020-04-08T14:06:51.525Z] >>> HTTP REQUEST GET https://firebase.googleapis.com/v1beta1/projects/d3-flappy-bird  
+ 
+[debug] [2020-04-08T14:06:57.596Z] <<< HTTP RESPONSE 500
+[debug] [2020-04-08T14:06:57.596Z] <<< HTTP RESPONSE BODY
+[debug] [2020-04-08T14:06:57.597Z] HTTP Error: 500, Internal error encountered.
+[debug] [2020-04-08T14:06:57.664Z] FirebaseError: HTTP Error: 500, Internal error encountered.
+    at module.exports (C:\Users\Gurveer Arora\AppData\Roaming\npm\node_modules\firebase-tools\lib\responseToError.js:38:12)
+    at Request._callback (C:\Users\Gurveer Arora\AppData\Roaming\npm\node_modules\firebase-tools\lib\api.js:39:35)
+    at Request.self.callback (C:\Users\Gurveer Arora\AppData\Roaming\npm\node_modules\firebase-tools\node_modules\request\request.js:185:22)
+    at Request.emit (events.js:210:5)
+    at Request.EventEmitter.emit (domain.js:475:20)
+    at Request.<anonymous> (C:\Users\Gurveer Arora\AppData\Roaming\npm\node_modules\firebase-tools\node_modules\request\request.js:1161:10)
+    at Request.emit (events.js:210:5)
+    at Request.EventEmitter.emit (domain.js:475:20)
+    at IncomingMessage.<anonymous> (C:\Users\Gurveer Arora\AppData\Roaming\npm\node_modules\firebase-tools\node_modules\request\request.js:1083:12)
+    at Object.onceWrapper (events.js:299:28)
+    at IncomingMessage.emit (events.js:215:7)
+    at IncomingMessage.EventEmitter.emit (domain.js:475:20)
+    at endReadableNT (_stream_readable.js:1184:12)
+    at processTicksAndRejections (internal/process/task_queues.js:80:21)
+[error] 
+[error] Error: Failed to get Firebase project d3-flappy-bird. Please make sure the project exists and your account has permission to access it.
+[debug] [2020-04-08T14:11:57.457Z] ----------------------------------------------------------------------
+[debug] [2020-04-08T14:11:57.460Z] Command:       C:\Program Files\nodejs\node.exe C:\Users\Gurveer Arora\AppData\Roaming\npm\node_modules\firebase-tools\lib\bin\firebase.js deploy
+[debug] [2020-04-08T14:11:57.460Z] CLI Version:   8.0.2
+[debug] [2020-04-08T14:11:57.460Z] Platform:      win32
+[debug] [2020-04-08T14:11:57.460Z] Node Version:  v12.13.1
+[debug] [2020-04-08T14:11:57.462Z] Time:          Wed Apr 08 2020 15:11:57 GMT+0100 (British Summer Time)
+[debug] [2020-04-08T14:11:57.463Z] ----------------------------------------------------------------------
+[debug] [2020-04-08T14:11:57.463Z] 
+[debug] [2020-04-08T14:11:57.479Z] > command requires scopes: ["email","openid","https://www.googleapis.com/auth/cloudplatformprojects.readonly","https://www.googleapis.com/auth/firebase","https://www.googleapis.com/auth/cloud-platform"]
+[debug] [2020-04-08T14:11:57.481Z] > authorizing via signed-in user
+[debug] [2020-04-08T14:11:57.482Z] [iam] checking project d3-flappy-bird for permissions ["firebase.projects.get","firebasedatabase.instances.update","firebasehosting.sites.update"]
+[debug] [2020-04-08T14:11:57.485Z] >>> HTTP REQUEST POST https://cloudresourcemanager.googleapis.com/v1/projects/d3-flappy-bird:testIamPermissions  
+ {"permissions":["firebase.projects.get","firebasedatabase.instances.update","firebasehosting.sites.update"]}
+[debug] [2020-04-08T14:11:59.176Z] <<< HTTP RESPONSE 200 {"content-type":"application/json; charset=UTF-8","vary":"X-Origin, Referer, Origin,Accept-Encoding","date":"Wed, 08 Apr 2020 14:12:00 GMT","server":"ESF","cache-control":"private","x-xss-protection":"0","x-frame-options":"SAMEORIGIN","x-content-type-options":"nosniff","server-timing":"gfet4t7; dur=1574","alt-svc":"quic=\":443\"; ma=2592000; v=\"46,43\",h3-Q050=\":443\"; ma=2592000,h3-Q049=\":443\"; ma=2592000,h3-Q048=\":443\"; ma=2592000,h3-Q046=\":443\"; ma=2592000,h3-Q043=\":443\"; ma=2592000,h3-T050=\":443\"; ma=2592000","accept-ranges":"none","transfer-encoding":"chunked"}
+[debug] [2020-04-08T14:11:59.178Z] >>> HTTP REQUEST GET https://firebase.googleapis.com/v1beta1/projects/d3-flappy-bird  
+ 
+[debug] [2020-04-08T14:12:05.284Z] <<< HTTP RESPONSE 500 {"vary":"X-Origin, Referer, Origin,Accept-Encoding","content-type":"application/json; charset=UTF-8","date":"Wed, 08 Apr 2020 14:12:06 GMT","server":"ESF","cache-control":"private","x-xss-protection":"0","x-frame-options":"SAMEORIGIN","x-content-type-options":"nosniff","alt-svc":"quic=\":443\"; ma=2592000; v=\"46,43\",h3-Q050=\":443\"; ma=2592000,h3-Q049=\":443\"; ma=2592000,h3-Q048=\":443\"; ma=2592000,h3-Q046=\":443\"; ma=2592000,h3-Q043=\":443\"; ma=2592000,h3-T050=\":443\"; ma=2592000","accept-ranges":"none","transfer-encoding":"chunked"}
+[debug] [2020-04-08T14:12:05.284Z] <<< HTTP RESPONSE BODY {"error":{"code":500,"message":"Internal error encountered.","status":"INTERNAL"}}
+[debug] [2020-04-08T14:12:05.286Z] HTTP Error: 500, Internal error encountered.
+[debug] [2020-04-08T14:12:05.376Z] FirebaseError: HTTP Error: 500, Internal error encountered.
+    at module.exports (C:\Users\Gurveer Arora\AppData\Roaming\npm\node_modules\firebase-tools\lib\responseToError.js:38:12)
+    at Request._callback (C:\Users\Gurveer Arora\AppData\Roaming\npm\node_modules\firebase-tools\lib\api.js:40:35)
+    at Request.self.callback (C:\Users\Gurveer Arora\AppData\Roaming\npm\node_modules\firebase-tools\node_modules\request\request.js:185:22)
+    at Request.emit (events.js:210:5)
+    at Request.EventEmitter.emit (domain.js:475:20)
+    at Request.<anonymous> (C:\Users\Gurveer Arora\AppData\Roaming\npm\node_modules\firebase-tools\node_modules\request\request.js:1154:10)
+    at Request.emit (events.js:210:5)
+    at Request.EventEmitter.emit (domain.js:475:20)
+    at IncomingMessage.<anonymous> (C:\Users\Gurveer Arora\AppData\Roaming\npm\node_modules\firebase-tools\node_modules\request\request.js:1076:12)
+    at Object.onceWrapper (events.js:299:28)
+    at IncomingMessage.emit (events.js:215:7)
+    at IncomingMessage.EventEmitter.emit (domain.js:475:20)
+    at endReadableNT (_stream_readable.js:1184:12)
+    at processTicksAndRejections (internal/process/task_queues.js:80:21)
+[error] 
+[error] Error: Failed to get Firebase project d3-flappy-bird. Please make sure the project exists and your account has permission to access it.

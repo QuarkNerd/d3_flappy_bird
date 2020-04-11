@@ -122,7 +122,7 @@ function createAndTransitionPipePair() {
   const timeToEdge = distanceToEdge / speed;
   const timeToPassPlayer = distanceToPassPlayer / speed;
   const pipeXSep = (pipeHeadWidth - pipeWidth) / 2;
-  const pipeYGap = 200;
+  const pipeYGap = 190;
 
   const pipeGenY = d3.randomUniform(80, HEIGHT - 201)();
   [
@@ -280,30 +280,4 @@ function makeFall(play, delay = 0, startPos = null) {
     .duration(Math.sqrt(endY - oldY) * 40)
     .attr("transform", createTransformString(transform))
     .ease(d3.easeQuadIn);
-}
-
-async function refreshScores() {
-  const scores = await getScores();
-  const scoresArray = scores.map(data => [data.name, data.score]);
-  scoreTable.selectAll("*").remove();
-  const header = scoreTable.append("thead").append("tr");
-  header
-    .selectAll("th")
-    .data(["Name", "Score"])
-    .enter()
-    .append("th")
-    .text(d => d);
-  const tablebody = scoreTable.append("tbody");
-  const rows = tablebody
-    .selectAll("tr")
-    .data(scoresArray)
-    .enter()
-    .append("tr");
-
-  rows
-    .selectAll("td")
-    .data(d => d)
-    .enter()
-    .append("td")
-    .text(d => d);
 }
