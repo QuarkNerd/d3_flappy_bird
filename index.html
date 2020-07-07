@@ -7,19 +7,7 @@
 <body >
   <div class="gapRight" id="game"></div>
   <button id="startGame" class="startGame shadow gapRight" onclick="startGame()">New Game</button>
-  <div style="background-color: white;width:30%;" class="shadow gapRight leaderBoardPanel" id="score">
-    <p>Honesty leaderboard:</p>
-    <input placeholder="Enter name: Max 3 characters, Auto capitalised" id="name" type="text" maxlength="3"></input>
-    <button disabled id="sendScore" onclick="sendScore()">Submit score to leaderboard </button>
-    <button id="refreshScores" onclick="refreshScores()">Fetch highscores</button>
-    <div id="scoreTable">
-    </div>
-  </div>
 </body>
-<script src="./__/firebase/7.8.0/firebase-app.js"></script>
-<script src="./__/firebase/7.8.0/firebase-auth.js"></script>
-<script src="https://www.gstatic.com/firebasejs/7.6.1/firebase-database.js"></script>
-<script src="./firebase.js"></script>
 
 <script src="https://d3js.org/d3.v5.min.js"></script>
 <script src="./utilities.js"></script>
